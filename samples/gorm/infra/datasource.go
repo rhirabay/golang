@@ -3,8 +3,8 @@ package infra
 import (
 	"fmt"
 
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 type Datasource struct {
@@ -24,11 +24,13 @@ func (datasource Datasource) GetConnection() *gorm.DB {
 	DBNAME := "gorm"
 
 	DSN := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", USER, PASS, HOST, PORT, DBNAME)
-	connection, err := gorm.Open("mysql", DSN)
+	connection, err := gorm.Open(mysql.Open(DSN), &gorm.Config{})
 
 	if err != nil {
 		panic(err.Error())
 	}
+
+	fmt.Println("Successfully connect to new database")
 
 	return connection
 }
